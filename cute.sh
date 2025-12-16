@@ -51,10 +51,22 @@ This will read tasks from CONTRIBUTING.md and enable debug mode.
       next
     }
     /^```/ {
-      print task_name sep shell_name sep command;
+      if (task_name != "" && shell_name != "" && command != "") {
+        print task_name sep shell_name sep command;
+      }
       task_name = "";
       shell_name = "";
       command = "";
+      next
+    }
+    /^\$/ {
+      # Lines starting with "$" are considered as example command blocks,
+      # representing command execution and its result, not as tasks to execute.
+      if (shell_name != "") {
+        task_name = "";
+        shell_name = "";
+        command = "";
+      }
       next
     }
     shell_name != "" {
