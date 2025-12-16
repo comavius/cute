@@ -58,14 +58,14 @@ This will read tasks from CONTRIBUTING.md with "###" headings and enable debug m
       next
     }
     /```/ {
-      print task_name sep shell_name sep commands;
+      print task_name sep shell_name sep command;
       task_name = "";
       shell_name = "";
-      commands = "";
+      command = "";
       next
     }
     shell_name != "" {
-      commands = commands (commands == "" ? "" : sep) $0;
+      command = command (command == "" ? "" : sep) $0;
       next
     }
   ' "$cute_target")
