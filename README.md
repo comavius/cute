@@ -2,6 +2,22 @@
 
 Cute: A CLI tool to exe"CUTE"s commands from markdown files.
 
+## Installation
+
+### Install manually
+
+```sh
+curl -s https://raw.githubusercontent.com/ras0q/cute/main/cute -o cute
+chmod +x cute
+mv ./cute ~/.local/bin/ # or under your preferred PATH
+```
+
+### Install as a Zsh plugin
+
+```sh
+antidote install ras0q/cute
+```
+
 ## Usage
 
 ```sh
