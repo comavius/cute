@@ -4,30 +4,27 @@ local cute_color_success="\033[32m"
 local cute_color_error="\033[31m"
 local cute_color_prompt="\033[90m"
 
-local cute_debug_mode=0
-
-
 _cute_usage() {
   cat <<EOF
 Cute: A CLI tool to exe"CUTE"s commands from markdown files.
 
 Usage:
-  cute [-h] [-d] [TASK_NAME|SLUG ...]
+  cute [-d] [-h] [-l] [TASK_NAME|SLUG ...]
 
 Options:
-  -h: Show this help message and exit
   -d: Enable debug mode (prints commands as they are executed)
+  -h: Show this help message and exit
+  -l: List tasks
 
 Arguments:
   TASK_NAME|SLUG: Task name or slug to execute. If specified, fuzzy search will be skipped.
                   Multiple tasks can be specified to execute them in order.
 
 Example:
-  cute                   # Interactive mode with fzf
-  cute -d                # Enable debug mode with fzf selection
+  cute -l                # List tasks
   cute build             # Execute task with slug "build"
   cute "Build Project"   # Execute task by name
-  cute build test deploy  # Execute multiple tasks in order
+  cute build test deploy # Execute multiple tasks in order
 EOF
 }
 
@@ -115,10 +112,13 @@ _cute_execute_task() {
 }
 
 cute() {
-  while getopts "hd" opt; do
+  local cute_debug_mode=0
+  local cute_list_mode=0
+  while getopts "dhl" opt; do
     case "$opt" in
-      h) _cute_usage; return 0 ;;
       d) cute_debug_mode=1 ;;
+      h) _cute_usage; return 0 ;;
+      l) cute_list_mode=1 ;;
     esac
   done
   shift $((OPTIND - 1))
@@ -126,15 +126,15 @@ cute() {
   cute_files="$(find . -type f -name "*.md" -o -name "*.markdown" | sort)"
   cute_tasks="$(_cute_extract_tasks "$cute_files")" || return 1
 
+  if [ $cute_list_mode -eq 1 ]; then
+    echo $cute_tasks | awk -F'\x1f' '{printf "%s\t%s\t%s\t%s\n", $1, $2, $3, $4}'
+    return 0
+  fi
+
   local cute_requested_tasks="$@"
   if [ -z "$cute_requested_tasks" ]; then
-    local cute_task_names=$(echo "$cute_tasks" | awk -F'\x1f' '{print $1 "\t" $2} ')
-    local cute_task_name=$(echo "$cute_task_names" | fzf --prompt="Select a task to execute: " | awk -F'\t' '{print $2}')
-    if [ -z "$cute_task_name" ]; then
-      echo "No task selected."
-      return 1
-    fi
-    cute_requested_tasks="$cute_task_name"
+    _cute_usage
+    return 0
   fi
 
   for cute_task_identifier in $cute_requested_tasks; do
