@@ -4,16 +4,22 @@ cute() {
   local cute_usage='Cute: A CLI tool to exe"CUTE"s commands from markdown files.
 
 Usage:
-  cute [-h] [-d]
+  cute [-h] [-d] [TASK_NAME|SLUG ...]
 
 Options:
   -h: Show this help message and exit
   -d: Enable debug mode (prints commands as they are executed)
 
+Arguments:
+  TASK_NAME|SLUG: Task name or slug to execute. If specified, fuzzy search will be skipped.
+                  Multiple tasks can be specified to execute them in order.
+
 Example:
-  cute -d
-This will enable debug mode.
-'
+  cute                    # Interactive mode with fzf
+  cute -d                 # Enable debug mode with fzf selection
+  cute build              # Execute task with slug "build"
+  cute "Build Project"    # Execute task by name
+  cute build test deploy  # Execute multiple tasks in order'
 
   local cute_color_success="\033[32m"
   local cute_color_error="\033[31m"
@@ -86,34 +92,51 @@ This will enable debug mode.
     return 1
   fi
 
-  local cute_task_name=$(echo "$cute_task_names" | fzf --prompt="Select a task to execute: ")
-  if [ -z "$cute_task_name" ]; then
-    echo "No task selected."
-    return 1
+  local cute_requested_tasks="$@"
+  if [ -z "$cute_requested_tasks" ]; then
+    local cute_task_name=$(echo "$cute_task_names" | fzf --prompt="Select a task to execute: ")
+    if [ -z "$cute_task_name" ]; then
+      echo "No task selected."
+      return 1
+    fi
+    cute_requested_tasks="$cute_task_name"
   fi
 
-  local cute_task=$(echo "$cute_tasks" | awk -F'\x1f' -v task="$cute_task_name" '$1 " (" $2 ")" == task {print $0; exit}')
-  local cute_shell=$(echo "$cute_task" | awk -F'\x1f' '{print $3}')
-  local cute_command=$(echo "$cute_task" | cut -d$'\x1f' -f4- | sed "s/$(print '\x1f')/\n/g")
-  if [ -z "$cute_command" ]; then
-    echo "No command found for task '$cute_task_name'."
-    return 1
-  fi
-
-  (
-    if [ $cute_debug_mode -eq 1 ]; then
-      printf "${cute_color_success}▶ Executing task: %s\033[0m\n" "$cute_task_name"
+  for cute_task_identifier in $cute_requested_tasks; do
+    if echo "$cute_task_identifier" | grep -q " ("; then
+      local cute_task=$(echo "$cute_tasks" | awk -F'\x1f' -v task="$cute_task_identifier" '$1 " (" $2 ")" == task {print $0; exit}')
+    else
+      local cute_task=$(echo "$cute_tasks" | awk -F'\x1f' -v identifier="$cute_task_identifier" '$1 == identifier || $2 == identifier {print $0; exit}')
     fi
 
-    export PS4="$(printf "${cute_color_prompt}[%s]$ \033[0m" "$cute_task_name")"
-    script -eq -c "$cute_shell -c 'set -ux; $cute_command'" /dev/null
-    local exit_code=$?
-    if [ $exit_code -ne 0 ]; then
-      return $exit_code
+    if [ -z "$cute_task" ]; then
+      echo "Task not found: '$cute_task_identifier'"
+      return 1
     fi
 
-    if [ $cute_debug_mode -eq 1 ]; then
-      printf "${cute_color_success}✔ Completed task: %s\033[0m\n" "$cute_task_name"
+    local cute_task_name=$(echo "$cute_task" | awk -F'\x1f' '{print $1}')
+    local cute_shell=$(echo "$cute_task" | awk -F'\x1f' '{print $3}')
+    local cute_command=$(echo "$cute_task" | cut -d$'\x1f' -f4- | sed "s/$(print '\x1f')/\n/g")
+    if [ -z "$cute_command" ]; then
+      echo "No command found for task '$cute_task_name'."
+      return 1
     fi
-  )
+
+    (
+      if [ $cute_debug_mode -eq 1 ]; then
+        printf "${cute_color_success}▶ Executing task: %s\033[0m\n" "$cute_task_name"
+      fi
+
+      export PS4="$(printf "${cute_color_prompt}[%s]$ \033[0m" "$cute_task_name")"
+      script -eq -c "$cute_shell -c 'set -ux; $cute_command'" /dev/null
+      local exit_code=$?
+      if [ $exit_code -ne 0 ]; then
+        return $exit_code
+      fi
+
+      if [ $cute_debug_mode -eq 1 ]; then
+        printf "${cute_color_success}✔ Completed task: %s\033[0m\n" "$cute_task_name"
+      fi
+    )
+  done
 }
