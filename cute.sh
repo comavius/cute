@@ -41,11 +41,11 @@ _cute_extract_tasks() {
     }
     match($0, /^```(sh|shell|bash|zsh)/, m) {
       if (task_name == "") {
-        print "no task specified.";
+        print "no task specified." > "/dev/stderr";
         exit 1;
       }
       if (shell_name != "") {
-        print "the previous codeblock is not closed."
+        print "the previous codeblock is not closed." > "/dev/stderr";
         exit 1;
       }
       shell_name = (m[1] == "shell" ? "sh" : m[1]);
@@ -54,6 +54,10 @@ _cute_extract_tasks() {
     /^```/ {
       if (task_name != "" && shell_name != "" && command != "") {
         slug = slugify(task_name);
+        if (slug_seen[slug]++) {
+          print "duplicate slug detected: " slug > "/dev/stderr";
+          exit 1;
+        }
         print task_name sep slug sep shell_name sep command;
       }
       task_name = "";
@@ -119,14 +123,8 @@ cute() {
   done
   shift $((OPTIND - 1))
 
-  local cute_files="$(find . -type f -name "*.md" -o -name "*.markdown" | sort)"
-  local cute_tasks=$(_cute_extract_tasks "$cute_files")
-
-  local cute_duplicate_slugs=$(echo "$cute_tasks" | awk -F'\x1f' '{print $2}' | sort | uniq -d)
-  if [ -n "$cute_duplicate_slugs" ]; then
-    echo "Duplicate task found: $cute_duplicate_slugs"
-    return 1
-  fi
+  cute_files="$(find . -type f -name "*.md" -o -name "*.markdown" | sort)"
+  cute_tasks="$(_cute_extract_tasks "$cute_files")" || return 1
 
   local cute_requested_tasks="$@"
   if [ -z "$cute_requested_tasks" ]; then
