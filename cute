@@ -1,9 +1,5 @@
 #!/bin/sh -eu
 
-local cute_color_success="\033[32m"
-local cute_color_error="\033[31m"
-local cute_color_prompt="\033[90m"
-
 _cute_usage() {
   cat <<EOF
 Cute: A CLI tool to exe"CUTE"s commands from markdown files.
@@ -112,6 +108,10 @@ _cute_execute_task() {
 }
 
 cute() {
+  local cute_color_success="\033[32m"
+  local cute_color_error="\033[31m"
+  local cute_color_prompt="\033[90m"
+
   local cute_debug_mode=0
   local cute_list_mode=0
   while getopts "dhl" opt; do
