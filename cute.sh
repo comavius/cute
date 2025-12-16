@@ -4,17 +4,16 @@ cute() {
   local cute_usage='Cute: A CLI tool to exe"CUTE"s commands from markdown files.
 
 Usage:
-  cute [-h] [-f <file>] [-H <heading>] [-t <task_color>] [-p <prompt_color>] [-d]
+  cute [-h] [-f <file>] [-d]
 
 Options:
   -h: Show this help message and exit
   -f: Specify the markdown file to read (default: README.md)
-  -H: Specify the heading to look for (default: "##")
   -d: Enable debug mode (prints commands as they are executed)
 
 Example:
-  cute -f CONTRIBUTING.md -H "###" -d
-This will read tasks from CONTRIBUTING.md with "###" headings and enable debug mode.
+  cute -f CONTRIBUTING.md -d
+This will read tasks from CONTRIBUTING.md and enable debug mode.
 '
 
   local cute_color_success="\033[32m"
@@ -22,14 +21,12 @@ This will read tasks from CONTRIBUTING.md with "###" headings and enable debug m
   local cute_color_prompt="\033[90m"
 
   local cute_target="README.md"
-  local cute_heading="##"
   local cute_debug_mode=0
 
-  while getopts "hf:H:d" opt; do
+  while getopts "hf:d" opt; do
     case "$opt" in
       h) echo "$cute_usage"; return 0 ;;
       f) cute_target="$OPTARG" ;;
-      H) cute_heading="$OPTARG" ;;
       d) cute_debug_mode=1 ;;
     esac
   done
@@ -40,8 +37,8 @@ This will read tasks from CONTRIBUTING.md with "###" headings and enable debug m
     return 1
   fi
 
-  local cute_tasks=$(awk -v heading="$cute_heading" -v sep="\x1f" '
-    match($0, /```(sh|shell|bash|zsh)/, m) {
+  local cute_tasks=$(awk -v sep="\x1f" '
+    match($0, /^```(sh|shell|bash|zsh)/, m) {
       if (task_name == "") {
         print "no task specified.";
         exit 1;
@@ -53,7 +50,7 @@ This will read tasks from CONTRIBUTING.md with "###" headings and enable debug m
       shell_name = (m[1] == "shell" ? "sh" : m[1]);
       next
     }
-    /```/ {
+    /^```/ {
       print task_name sep shell_name sep command;
       task_name = "";
       shell_name = "";
@@ -64,9 +61,8 @@ This will read tasks from CONTRIBUTING.md with "###" headings and enable debug m
       command = command (command == "" ? "" : sep) $0;
       next
     }
-    $0 ~ "^" heading " " {
-      task_name = $0;
-      sub("^" heading " ", "", task_name);
+    match($0, /^#{1,6} (.+)/, m) {
+      task_name = m[1];
       next
     }
   ' "$cute_target")
