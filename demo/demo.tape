@@ -2,8 +2,9 @@ Output demo.gif
 
 Set Shell "bash"
 Set FontSize 24
-Set Width 1600
+Set Width 1300
 Set Height 800
+Set Padding 40
 Set Margin 40
 Set MarginFill "#6B50FF"
 Set BorderRadius 20
