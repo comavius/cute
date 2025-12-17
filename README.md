@@ -23,6 +23,7 @@ Example:
   cute build             # Execute task with slug "build"
   cute "Build Project"   # Execute task by name
   cute build test deploy # Execute multiple tasks in order
+  cute $(cute -l | fzf)  # Fuzzy search and execute a task using fzf
 ```
 
 ## Features
