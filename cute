@@ -33,10 +33,6 @@ _cute_extract_tasks() {
       return str
     }
     match($0, /^```(sh|shell|bash|zsh)/, m) {
-      if (task_name == "") {
-        print "no task specified." > "/dev/stderr";
-        exit 1;
-      }
       if (shell_name != "") {
         print "the previous codeblock is not closed." > "/dev/stderr";
         exit 1;

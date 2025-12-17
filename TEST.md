@@ -1,16 +1,40 @@
 # Test Cases for Cute
 
-## Simple Command
-
-```sh
-echo "test output"
-```
-
-## Multiple Commands
+## Test
 
 ```sh
 echo "first"
 echo "second"
+```
+
+### Cute can execute any shell code block in markdown headings
+
+```sh
+echo "h3 test"
+```
+
+#### h4
+
+```sh
+echo "h4 test"
+```
+
+##### h5
+
+```sh
+echo "h5 test"
+```
+
+###### h6
+
+```sh
+echo "h6 test"
+```
+
+####### h7 (should be ignored)
+
+```sh
+echo "h7 test"
 ```
 
 ## Bash Shell
