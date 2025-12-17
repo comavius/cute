@@ -42,3 +42,7 @@ Example:
   cute "Build Project"   # Execute task by name
   cute build test deploy # Execute multiple tasks in order
 ```
+
+## Acknowledgements
+
+- [joerdav/xc: Markdown defined task runner.](https://github.com/joerdav/xc): Cute is inspired by xc, but focuses on simplicity and ease of use.
