@@ -150,13 +150,13 @@ cute() {
     return 0
   fi
 
-  local cute_requested_tasks="$@"
-  if [ -z "$cute_requested_tasks" ]; then
+  local cute_requested_tasks=("$@")
+  if [ ${#cute_requested_tasks[@]} -eq 0 ]; then
     _cute_usage
     return 0
   fi
 
-  for cute_task_identifier in $cute_requested_tasks; do
+  for cute_task_identifier in "${cute_requested_tasks[@]}"; do
     local cute_task=$(echo "$cute_tasks" | awk -F'\x1f' -v identifier="$cute_task_identifier" '$1 == identifier || $2 == identifier {print $0; exit}')
 
     if [ -z "$cute_task" ]; then
