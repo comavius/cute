@@ -5,12 +5,12 @@ _cute_usage() {
 Cute: A CLI tool to exe"CUTE"s commands from markdown files.
 
 Usage:
-  cute [-d] [-h] [-l] [TASK_NAME|SLUG ...]
+  cute [-h] [-l] [-v] [TASK_NAME|SLUG ...]
 
 Options:
-  -d: Enable debug mode (prints commands as they are executed)
   -h: Show this help message and exit
   -l: List tasks
+  -v: Enable verbose mode (prints commands as they are executed)
 
 Arguments:
   TASK_NAME|SLUG: Task name or slug to execute. If specified, fuzzy search will be skipped.
@@ -96,7 +96,7 @@ _cute_execute_task() {
   }
 
   (
-    if [ $cute_debug_mode -eq 1 ]; then
+    if [ $cute_verbose_mode -eq 1 ]; then
       printf "${cute_color_success}▶ Executing task: %s\033[0m\n" "$cute_task_name"
     fi
 
@@ -107,7 +107,7 @@ _cute_execute_task() {
       return $exit_code
     fi
 
-    if [ $cute_debug_mode -eq 1 ]; then
+    if [ $cute_verbose_mode -eq 1 ]; then
       printf "${cute_color_success}✔ Completed task: %s\033[0m\n" "$cute_task_name"
     fi
   )
@@ -118,13 +118,13 @@ cute() {
   local cute_color_error="\033[31m"
   local cute_color_prompt="\033[90m"
 
-  local cute_debug_mode=0
   local cute_list_mode=0
-  while getopts "dhl" opt; do
+  local cute_verbose_mode=0
+  while getopts "hlv" opt; do
     case "$opt" in
-      d) cute_debug_mode=1 ;;
       h) _cute_usage; return 0 ;;
       l) cute_list_mode=1 ;;
+      v) cute_verbose_mode=1 ;;
     esac
   done
   shift $((OPTIND - 1))

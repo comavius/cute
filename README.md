@@ -25,12 +25,12 @@ $ source ./cute.sh && cute -h
 Cute: A CLI tool to exe"CUTE"s commands from markdown files.
 
 Usage:
-  cute [-d] [-h] [-l] [TASK_NAME|SLUG ...]
+  cute [-h] [-l] [-v] [TASK_NAME|SLUG ...]
 
 Options:
-  -d: Enable debug mode (prints commands as they are executed)
   -h: Show this help message and exit
   -l: List tasks
+  -v: Enable verbose mode (prints commands as they are executed)
 
 Arguments:
   TASK_NAME|SLUG: Task name or slug to execute. If specified, fuzzy search will be skipped.
