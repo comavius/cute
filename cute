@@ -127,11 +127,12 @@ cute() {
   local cute_color_error="\033[31m"
   local cute_color_prompt="\033[90m"
 
+  local cute_help_mode=0
   local cute_list_mode=0
   local cute_verbose_mode=0
   while getopts "hlv" opt; do
     case "$opt" in
-      h) _cute_usage; return 0 ;;
+      h) cute_help_mode=1 ;;
       l) cute_list_mode=1 ;;
       v) cute_verbose_mode=1 ;;
     esac
@@ -141,17 +142,22 @@ cute() {
   cute_files="$(_cute_find_markdown_files)"
   cute_tasks="$(_cute_extract_tasks "$cute_files")" || return 1
 
-  if [ $cute_list_mode -eq 1 ]; then
+  _cute_list_tasks() {
     if [ "$cute_verbose_mode" -eq 1 ]; then
       echo "$cute_tasks" | awk -F'\x1f' '{printf "%s\t%s\t%s\t%s\n", $1, $2, $3, $4}'
     else
       echo "$cute_tasks" | awk -F'\x1f' '{print $2}'
     fi
+  }
+
+  if [ $cute_list_mode -eq 1 ]; then
+    _cute_list_tasks
     return 0
   fi
 
-  if [ $# -eq 0 ]; then
+  if [ $cute_help_mode -eq 1 ] || [ $# -eq 0 ]; then
     _cute_usage
+    printf "\nAvailable tasks:\n%s\n" "$(_cute_list_tasks | sed 's/^/  /')"
     return 0
   fi
 
