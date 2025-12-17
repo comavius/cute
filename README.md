@@ -4,19 +4,56 @@ Cute: A CLI tool to exe"CUTE"s commands from markdown files.
 
 ## Installation
 
-### Install as a Zsh plugin (Recommended)
+### Zsh
 
-```sh
+Using a plugin manager like [antidote](https://github.com/mattmc3/antidote):
+
+```zsh
 antidote install ras0q/cute
 ```
 
-### Install manually
+Or add to your `~/.zshrc`:
 
-You can install or update cute with a single command. This will download the script to `~/.local/share/cute/` and add the necessary configuration to your `~/.bashrc` or `~/.zshrc`.
-
-```sh
-curl -sL https://raw.githubusercontent.com/ras0q/cute/main/install.sh | sh
+```zsh
+# Cute
+CUTE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/cute"
+if [ ! -d "$CUTE_DIR" ]; then
+  git clone https://github.com/ras0q/cute "$CUTE_DIR"
+fi
+source "$CUTE_DIR/cute"
 ```
+
+### Bash
+
+Add to your `~/.bashrc`:
+
+```bash
+# Cute
+CUTE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/cute"
+if [ ! -d "$CUTE_DIR" ]; then
+  git clone https://github.com/ras0q/cute "$CUTE_DIR"
+fi
+source "$CUTE_DIR/cute"
+```
+
+### Fish
+
+Using [Fisher](https://github.com/jorgebucaran/fisher):
+
+```fish
+fisher install ras0q/cute
+```
+
+Or install the function manually:
+
+```fish
+# Download the function file
+set -l cute_functions_dir ~/.config/fish/functions
+mkdir -p $cute_functions_dir
+curl -fsSL https://raw.githubusercontent.com/ras0q/cute/main/functions/cute.fish -o $cute_functions_dir/cute.fish
+```
+
+The `cute` command will automatically download the script on first use.
 
 ## Usage
 
