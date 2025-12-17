@@ -34,7 +34,7 @@ _cute_extract_tasks() {
     }
     match($0, /^```(sh|shell|bash|zsh)/, m) {
       if (shell_name != "") {
-        print "the previous codeblock is not closed." > "/dev/stderr";
+        print "_cute_extract_tasks: The previous codeblock is not closed." > "/dev/stderr";
         exit 1;
       }
       shell_name = (m[1] == "shell" ? "sh" : m[1]);
@@ -44,7 +44,7 @@ _cute_extract_tasks() {
       if (task_name != "" && shell_name != "" && command != "") {
         slug = slugify(task_name);
         if (slug_seen[slug]++) {
-          print "duplicate slug detected: " slug > "/dev/stderr";
+          print "_cute_extract_tasks: Duplicate slug detected: " slug > "/dev/stderr";
           exit 1;
         }
         print task_name sep slug sep shell_name sep command;
@@ -90,7 +90,7 @@ _cute_execute_task() {
       fi
     done
     if [ -z "$cute_task_name" ] || [ -z "$cute_task_slug" ] || [ -z "$cute_shell" ] || [ -z "$cute_command" ]; then
-      echo "Invalid task format for task: '$cute_task_name'"
+      echo "_cute_execute_task: Invalid task format for task: '$cute_task_name'"
       return 1
     fi
   }
@@ -147,7 +147,7 @@ cute() {
     local cute_task=$(echo "$cute_tasks" | awk -F'\x1f' -v identifier="$cute_task_identifier" '$1 == identifier || $2 == identifier {print $0; exit}')
 
     if [ -z "$cute_task" ]; then
-      echo "Task not found: '$cute_task_identifier'"
+      echo "cute: Task not found: '$cute_task_identifier'"
       return 1
     fi
 
