@@ -5,7 +5,8 @@ A CLI tool to exe"CUTE"s commands from markdown files.
 ![Demo](./demo/demo.gif)
 
 ```sh
-$ source ./cute.sh && cute -h
+$ source <(curl -fsSL https://raw.githubusercontent.com/ras0q/cute/main/cute)
+$ cute -h
 Cute: A CLI tool to exe"CUTE"s commands from markdown files.
 
 Usage:
@@ -57,6 +58,15 @@ Cute is pure shell requiring no binary installation, uses natural Markdown forma
 Cute scans all Markdown files in the project instead of a single dedicated file (e.g. README.md), and any Markdown heading becomes a task without needing a `## Tasks` section.
 
 ## Installation
+
+### Let's give it a try!
+
+Cute is a pure shell script. You can try it out **without installation** by running:
+
+```sh
+source <(curl -fsSL https://raw.githubusercontent.com/ras0q/cute/main/cute)
+cute -h
+```
 
 ### Zsh
 
