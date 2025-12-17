@@ -15,6 +15,8 @@ antidote install ras0q/cute
 Or add to your `~/.zshrc`:
 
 ```zsh
+# In ~/.zshrc
+
 # Cute
 CUTE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/cute"
 if [ ! -d "$CUTE_DIR" ]; then
@@ -28,6 +30,8 @@ source "$CUTE_DIR/cute"
 Add to your `~/.bashrc`:
 
 ```bash
+# In ~/.bashrc
+
 # Cute
 CUTE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/cute"
 if [ ! -d "$CUTE_DIR" ]; then
@@ -47,7 +51,6 @@ fisher install ras0q/cute
 Or install the function manually:
 
 ```fish
-# Download the function file
 set -l cute_functions_dir ~/.config/fish/functions
 mkdir -p $cute_functions_dir
 curl -fsSL https://raw.githubusercontent.com/ras0q/cute/main/functions/cute.fish -o $cute_functions_dir/cute.fish
