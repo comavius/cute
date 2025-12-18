@@ -1,13 +1,13 @@
 # Cute
 
-A CLI tool to exe"CUTE"s commands from markdown files.
+A CLI tool to exe***cute***s commands from markdown files.
 
 ![Demo](./demo/demo.gif)
 
 ```sh
 $ source <(curl -fsSL https://raw.githubusercontent.com/ras0q/cute/main/cute)
 $ cute -h
-Cute: A CLI tool to exe"CUTE"s commands from markdown files.
+Cute: A CLI tool to executes commands from markdown files.
 
 Usage:
   cute [-h] [-l] [-v] [TASK_NAME|SLUG ...]
