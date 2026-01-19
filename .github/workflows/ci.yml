@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bash zsh
+      - name: Run tests
+        run: |
+          if ! ./tests/run-test.sh; then
+            echo "Tests failed"
+            git --no-pager diff
+            exit 1
+          fi

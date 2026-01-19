@@ -31,7 +31,9 @@ echo "h5 test"
 echo "h6 test"
 ```
 
-####### h7 (should be ignored)
+####### h7
+
+This command should be ignored.
 
 ```sh
 echo "h7 test"
@@ -41,12 +43,14 @@ echo "h7 test"
 
 ```bash
 echo "bash test"
+echo "$BASH_VERSION"
 ```
 
 ## Zsh Shell
 
 ```zsh
 echo "zsh test"
+echo "$ZSH_VERSION"
 ```
 
 ## Shell Variant
@@ -55,7 +59,9 @@ echo "zsh test"
 echo "shell variant test"
 ```
 
-## Example Block (Should Be Ignored)
+## Example Block
+
+This command should Be Ignored
 
 ```sh
 $ echo "This should not execute"
@@ -79,5 +85,5 @@ exit 0
 
 ```sh
 false
-echo "This should not print"
+echo "This should not be executed"
 ```
