@@ -25,13 +25,15 @@
         ./cute.nix
         {}
       ];
-    programs.zsh.plugins.cute =
+    programs.zsh.plugins =
       lib.mkIf (
         config.programs.cute.installation == "zsh-plugin"
-      ) {
-        name = "cute";
-        src = ../.;
-        file = "cute.plugin.zsh";
-      };
+      ) [
+        {
+          name = "cute";
+          src = ../.;
+          file = "cute.plugin.zsh";
+        }
+      ];
   };
 }
