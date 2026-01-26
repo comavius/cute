@@ -106,7 +106,7 @@ Or follow the [Basic Usage](#basic-usage).
 
 ### Nix (home-manager)
 
-You can install cute using home-manager.
+You can install Cute using home-manager.
 
 ```nix
 # flake.nix
@@ -132,7 +132,7 @@ You can install cute using home-manager.
 
 ### Nix (standalone)
 
-You can also use cute as a single package.
+You can also use Cute as a single package.
 
 ```sh
 nix run github:ras0q/cute
