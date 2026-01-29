@@ -1,5 +1,5 @@
 {
-  description = "Nix flake for cutem - a CLI tool that exeCUTEs commands from Markdown files.";
+  description = "Nix flake for Cute - a CLI tool that exeCUTEs commands from Markdown files.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
